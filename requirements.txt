@@ -1,0 +1,9 @@
+pandas
+geopandas
+numpy
+xarray
+matplotlib
+agrifoodpy
+openpyxl
+git+https://github.com/FixOurFood/agrifoodpy-data.git
+

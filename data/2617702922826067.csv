@@ -1,0 +1,192 @@
+
+"TS001 - Number of usual residents in households and communal establishments"
+"ONS Crown Copyright Reserved [from Nomis on 8 February 2024]"
+"Population :","All usual residents"
+"Units      :","Persons"
+"Residence type:","Total: All usual residents"
+
+"2022 local authorities: county","mnemonic","2021"
+
+"Darlington","E06000005",107799
+"County Durham","E06000047",522068
+"Hartlepool","E06000001",92338
+"Middlesbrough","E06000002",143926
+"Northumberland","E06000057",320567
+"Redcar and Cleveland","E06000003",136531
+"Stockton-on-Tees","E06000004",196595
+"Gateshead","E08000037",196151
+"Newcastle upon Tyne","E08000021",300125
+"North Tyneside","E08000022",208967
+"South Tyneside","E08000023",147776
+"Sunderland","E08000024",274172
+"Blackburn with Darwen","E06000008",154738
+"Blackpool","E06000009",141036
+"Cheshire East","E06000049",398772
+"Cheshire West and Chester","E06000050",357150
+"Halton","E06000006",128478
+"Warrington","E06000007",210974
+"Cumbria","E10000006",499846
+"Bolton","E08000001",295963
+"Bury","E08000002",193851
+"Manchester","E08000003",551938
+"Oldham","E08000004",242088
+"Rochdale","E08000005",223773
+"Salford","E08000006",269923
+"Stockport","E08000007",294773
+"Tameside","E08000008",231071
+"Trafford","E08000009",235052
+"Wigan","E08000010",329330
+"Lancashire","E10000017",1235354
+"Knowsley","E08000011",154519
+"Liverpool","E08000012",486088
+"Sefton","E08000014",279233
+"St. Helens","E08000013",183248
+"Wirral","E08000015",320199
+"East Riding of Yorkshire","E06000011",342215
+"Kingston upon Hull, City of","E06000010",267014
+"North East Lincolnshire","E06000012",156966
+"North Lincolnshire","E06000013",169680
+"York","E06000014",202821
+"North Yorkshire","E10000023",615491
+"Barnsley","E08000016",244572
+"Doncaster","E08000017",308106
+"Rotherham","E08000018",265807
+"Sheffield","E08000019",556521
+"Bradford","E08000032",546412
+"Calderdale","E08000033",206631
+"Kirklees","E08000034",433216
+"Leeds","E08000035",811956
+"Wakefield","E08000036",353368
+"Derby","E06000015",261364
+"Leicester","E06000016",368571
+"Nottingham","E06000018",323632
+"Rutland","E06000017",41049
+"Derbyshire","E10000007",794636
+"Leicestershire","E10000018",712366
+"Lincolnshire","E10000019",768364
+"Nottinghamshire","E10000024",824822
+"North Northamptonshire","E06000061",359525
+"West Northamptonshire","E06000062",425725
+"Herefordshire, County of","E06000019",187034
+"Shropshire","E06000051",323606
+"Stoke-on-Trent","E06000021",258366
+"Telford and Wrekin","E06000020",185541
+"Staffordshire","E10000028",876104
+"Warwickshire","E10000031",596772
+"Birmingham","E08000025",1144919
+"Coventry","E08000026",345325
+"Dudley","E08000027",323486
+"Sandwell","E08000028",341832
+"Solihull","E08000029",216240
+"Walsall","E08000030",284124
+"Wolverhampton","E08000031",263727
+"Worcestershire","E10000034",603676
+"Bedford","E06000055",185225
+"Central Bedfordshire","E06000056",294252
+"Luton","E06000032",225262
+"Peterborough","E06000031",215671
+"Southend-on-Sea","E06000033",180686
+"Thurrock","E06000034",176001
+"Cambridgeshire","E10000003",678849
+"Essex","E10000012",1503524
+"Hertfordshire","E10000015",1198798
+"Norfolk","E10000020",916120
+"Suffolk","E10000029",760688
+"Camden","E09000007",210136
+"City of London","E09000001",8583
+"Hackney","E09000012",259146
+"Hammersmith and Fulham","E09000013",183157
+"Haringey","E09000014",264238
+"Islington","E09000019",216589
+"Kensington and Chelsea","E09000020",143375
+"Lambeth","E09000022",317654
+"Lewisham","E09000023",300553
+"Newham","E09000025",351036
+"Southwark","E09000028",307637
+"Tower Hamlets","E09000030",310306
+"Wandsworth","E09000032",327506
+"Westminster","E09000033",204236
+"Barking and Dagenham","E09000002",218869
+"Barnet","E09000003",389344
+"Bexley","E09000004",246472
+"Brent","E09000005",339816
+"Bromley","E09000006",329992
+"Croydon","E09000008",390719
+"Ealing","E09000009",367115
+"Enfield","E09000010",329984
+"Greenwich","E09000011",289068
+"Harrow","E09000015",261203
+"Havering","E09000016",262052
+"Hillingdon","E09000017",305909
+"Hounslow","E09000018",288181
+"Kingston upon Thames","E09000021",168063
+"Merton","E09000024",215186
+"Redbridge","E09000026",310260
+"Richmond upon Thames","E09000027",195278
+"Sutton","E09000029",209639
+"Waltham Forest","E09000031",278426
+"Bracknell Forest","E06000036",124607
+"Brighton and Hove","E06000043",277103
+"Isle of Wight","E06000046",140459
+"Medway","E06000035",279773
+"Milton Keynes","E06000042",287060
+"Portsmouth","E06000044",208003
+"Reading","E06000038",174224
+"Slough","E06000039",158500
+"Southampton","E06000045",248922
+"West Berkshire","E06000037",161448
+"Windsor and Maidenhead","E06000040",153496
+"Wokingham","E06000041",177503
+"Buckinghamshire","E06000060",553078
+"East Sussex","E10000011",545848
+"Hampshire","E10000014",1400899
+"Kent","E10000016",1576069
+"Oxfordshire","E10000025",725291
+"Surrey","E10000030",1203108
+"West Sussex","E10000032",882674
+"Bath and North East Somerset","E06000022",193409
+"Bristol, City of","E06000023",472465
+"Cornwall","E06000052",570305
+"Isles of Scilly","E06000053",2053
+"North Somerset","E06000024",216726
+"Plymouth","E06000026",264695
+"Bournemouth, Christchurch and Poole","E06000058",400196
+"South Gloucestershire","E06000025",290424
+"Swindon","E06000030",233407
+"Torbay","E06000027",139324
+"Wiltshire","E06000054",510333
+"Devon","E10000008",811640
+"Dorset","E06000059",379579
+"Gloucestershire","E10000013",645076
+"Somerset","E10000027",571548
+"Isle of Anglesey","W06000001",68878
+"Gwynedd","W06000002",117393
+"Conwy","W06000003",114741
+"Denbighshire","W06000004",95817
+"Flintshire","W06000005",154962
+"Wrexham","W06000006",135117
+"Powys","W06000023",133169
+"Ceredigion","W06000008",71475
+"Pembrokeshire","W06000009",123360
+"Carmarthenshire","W06000010",187897
+"Swansea","W06000011",238490
+"Neath Port Talbot","W06000012",142289
+"Bridgend","W06000013",145488
+"Vale of Glamorgan","W06000014",131939
+"Cardiff","W06000015",362308
+"Rhondda Cynon Taff","W06000016",237651
+"Merthyr Tydfil","W06000024",58836
+"Caerphilly","W06000018",175952
+"Blaenau Gwent","W06000019",66904
+"Torfaen","W06000020",92276
+"Monmouthshire","W06000021",92957
+"Newport","W06000022",159592
+
+
+
+"","In order to protect against disclosure of personal information, records"
+"","have been swapped between different geographic areas and counts perturbed"
+"","by small amounts. Small counts at the lowest geographies will be most"
+"","affected."
+"",""
+
