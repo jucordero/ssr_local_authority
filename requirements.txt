@@ -3,7 +3,10 @@ geopandas
 numpy
 xarray
 matplotlib
-agrifoodpy
+streamlit
 openpyxl
+ipython
+st-theme
+git+https://github.com/FixOurFood/agrifoodpy.git@ffc_model
 git+https://github.com/FixOurFood/agrifoodpy-data.git
 
