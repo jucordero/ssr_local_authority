@@ -1,0 +1,149 @@
+
+variables:
+  # fbs_years: &fbs_years [2020, 2030, 2040, 2050, 2060, 2070, 2080, 2090, 2100]
+  # fbs_years: &fbs_years !numpy.arange [2020, 2101]
+  fbs_years: &fbs_years !numpy.arange [2020, 2051]
+  
+  # land_years: &land_years [2020, 2030, 2040, 2050, 2060, 2070, 2080, 2090, 2100]
+  land_years: &land_years !numpy.arange [2020, 2051]
+
+
+nodes:
+  # Loading datasets
+  - function: agrifoodpy.utils.nodes.load_dataset
+    name: "Load UK Food Data"
+    params:
+      datablock_path: "food_baseline"
+      module: "agrifoodpy_data.food"
+      data_attr: "FAOSTAT"
+      coords: {
+            Year: 2020,
+            Region: 229}
+
+  - function: agrifoodpy.utils.nodes.load_dataset
+    name: "Load UK Population Data"
+    params:
+      datablock_path: "population"
+      module: "agrifoodpy_data.population"
+      data_attr: "UN"
+      da: Medium
+      coords: {
+            Year: *fbs_years,
+            Region: 826,
+            Datatype: "Total"}
+
+  - function: agrifoodpy.utils.nodes.load_dataset
+    name: "Load UK Land Use Data"
+    params:
+      datablock_path: "land"
+      module: "agrifoodpy_data.land"
+      data_attr: "UKCEH_LC_1000"
+      da: percentage_aggregate
+
+  - function: agrifoodpy.utils.nodes.load_dataset
+    name: "Load emissions data"
+    params:
+      datablock_path: "emissions"
+      module: "agrifoodpy_data.impact"
+      data_attr: "UKNDC_FAOSTAT"
+
+  - function: agrifoodpy.utils.nodes.load_dataset
+    name: "Load nutritional data"
+    params:
+      datablock_path: "nutrients"
+      module: "agrifoodpy_data.food"
+      data_attr: "Nutrients_FAOSTAT"
+      da: ["kcal", "protein", "fat"]
+      coords: {
+            Year: 2020,
+            Region: 229}
+
+  # Extending to 2100
+  - function: agrifoodpy.utils.nodes.add_years
+    name: "Extend nutrient data to 2100"
+    params:
+      dataset: "nutrients"
+      years: *fbs_years
+      projection: constant
+
+  - function: agrifoodpy.utils.nodes.add_years
+    name: "Extend land use data to 2100"
+    params:
+      dataset: "land"
+      years: *land_years
+      projection: constant
+
+  - function: agrifoodpy.utils.nodes.add_years
+    name: "Extend emissions data to 2100"
+    params:
+      dataset: "emissions"
+      years: *fbs_years
+      projection: constant
+
+  - function: agrifoodpy.utils.nodes.add_years
+    name: "Extend food data to 2100"
+    params:
+      dataset: "food_baseline"
+      years: *fbs_years
+      projection: constant
+
+  - function: agrifoodpy.food.model.project_by_population
+    name: "Project fbs by population"
+    params:
+      fbs: "food_baseline"
+      population: "population"
+      # scale feed 
+      scale_feed: true
+      feed_items: !!python/tuple ["Item_origin", "Animal Products"]
+
+      # scale seed
+      scale_seed: true
+      seed_items: !!python/tuple ["Item_origin", "Vegetal Products"]
+      
+      # scale processing
+      scale_processing: true
+
+      return_key: "food_projected"
+
+  - function: agrifoodpy.land.model.land_scaling_from_food
+    name: "Scale land use from food production"
+    params:
+      land: "land"
+      fbs: "food_projected"
+      fbs_reference: "food_baseline"
+      element: "production"
+      category: ["Improved grassland", "Semi-natural grassland"]
+      items: !!python/tuple ["Item_origin", "Animal Products"]
+      keep_land_constant: true
+      target_category: ["Broadleaf woodland", "Coniferous woodland"]
+      return_key: "land"
+
+  # Shocks
+  - function: agrifoodpy_shocks.crises.environmental.rapid_production_decrease
+    name: "Apply rapid decrease shock to food production"
+    params:
+      fbs: "food_projected"
+      items: !!python/tuple ["Item_origin", "Vegetal Products"]
+      domestic_use_element: ["food", "feed", "seed", "processing", "losses", "other"]
+      return_key: "food"
+
+  - function: agrifoodpy_shocks.crises.geopolitical.rapid_imports_decrease
+    name: "Apply rapid decrease shock to food imports"
+    params:
+      fbs: "food"
+      items: !!python/tuple ["Item_origin", "Vegetal Products"]
+      domestic_use_element: ["food", "feed", "seed", "processing", "losses", "other"]
+      return_key: "food"
+
+  - function: agrifoodpy.land.model.land_scaling_from_food
+    name: "Scale land after shock"
+    params:
+      land: "land"
+      fbs: "food"
+      fbs_reference: "food_projected"
+      element: "production"
+      category: "Arable"
+      items: !!python/tuple ["Item_origin", "Vegetal Products"]
+      keep_land_constant: true
+      target_category: "Non-productive arable"
+      return_key: "land"

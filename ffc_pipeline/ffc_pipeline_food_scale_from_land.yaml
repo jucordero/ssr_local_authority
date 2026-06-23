@@ -1,0 +1,106 @@
+nodes:
+  # Loading datasets
+  - function: agrifoodpy.utils.nodes.load_dataset
+    name: "Load UK Food Data"
+    params:
+      datablock_path: "food"
+      module: "agrifoodpy_data.food"
+      data_attr: "FAOSTAT"
+      coords: {
+            Year: 2020,
+            Region: 229}
+
+  - function: agrifoodpy.utils.nodes.load_dataset
+    name: "Load UK Population Data"
+    params:
+      datablock_path: "population"
+      module: "agrifoodpy_data.population"
+      data_attr: "UN"
+      da: Medium
+      coords: {
+            Year: !numpy.arange [2020, 2101],
+            Region: 826,
+            Datatype: "Total"}
+
+  - function: agrifoodpy.utils.nodes.load_dataset
+    name: "Load UK Land Use Data"
+    params:
+      datablock_path: "land"
+      module: "agrifoodpy_data.land"
+      data_attr: "UKCEH_LC_1000"
+      da: percentage_aggregate
+
+  - function: agrifoodpy.utils.nodes.load_dataset
+    name: "Load emissions data"
+    params:
+      datablock_path: "emissions"
+      module: "agrifoodpy_data.impact"
+      data_attr: "UKNDC_FAOSTAT"
+
+  - function: agrifoodpy.utils.nodes.load_dataset
+    name: "Load nutritional data"
+    params:
+      datablock_path: "nutrients"
+      module: "agrifoodpy_data.food"
+      data_attr: "Nutrients_FAOSTAT"
+      da: ["kcal", "protein", "fat"]
+      coords: {
+            Year: 2020,
+            Region: 229}
+
+  # Extending to 2100
+  - function: agrifoodpy.utils.nodes.add_years
+    name: "Extend nutrient data to 2100"
+    params:
+      dataset: "nutrients"
+      years: !numpy.arange [2020, 2101]
+      projection: constant
+
+  - function: agrifoodpy.utils.nodes.add_years
+    name: "Extend land use data to 2100"
+    params:
+      dataset: "land"
+      years: [2020, 2030, 2040, 2050, 2060, 2070, 2080, 2090, 2100]
+      projection: constant
+
+  - function: agrifoodpy.utils.nodes.copy_datablock
+    name: "Copy land data to keep baseline"
+    params:
+      key: "land"
+      out_key: "land_baseline"
+
+  - function: agrifoodpy.utils.nodes.add_years
+    name: "Extend emissions data to 2100"
+    params:
+      dataset: "emissions"
+      years: !numpy.arange [2020, 2101]
+      projection: constant
+
+  - function: agrifoodpy.utils.nodes.add_years
+    name: "Extend food data to 2100"
+    params:
+      dataset: "food"
+      # years: !numpy.arange [2020, 2101]
+      years: [2020, 2030, 2040, 2050, 2060, 2070, 2080, 2090, 2100]      
+      projection: constant
+
+# Scale land use to food production
+  - function: agrifoodpy.land.model.scale_land
+    name: "Scale pasturee land to half"
+    params:
+      land: "land"
+      origin: ["Semi-natural grassland", "Improved grassland"]
+      fraction: 0.5
+      return_key: "land"
+
+  - function: agrifoodpy.food.model.food_scaling_from_land
+    name: "Scale animal products from pasture change"
+    params:
+      fbs: "food"
+      land_current: "land"
+      land_reference: "land_baseline"
+      categories: ["Semi-natural grassland", "Improved grassland"]
+      element: production
+      keep_elements_constant: true
+      items: [2731, 2732, 2733]
+      return_key: "food"

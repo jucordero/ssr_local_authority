@@ -24,7 +24,7 @@ def page_food_balance_sheet():
     with col_cap3:
         item_list = st.multiselect(
             "Items",
-            (fbs[dissagregation].values)
+            (set(fbs[dissagregation].values))
             )
 
 
@@ -36,7 +36,13 @@ def page_food_balance_sheet():
     fbs = fbs.sel(item_selection)
 
     if option_key == "FAOSTAT-style chart":
-        year = st.slider("Year", 2020, 2100, 2100)
+        year = st.slider(
+            "Year",
+            min_value=fbs.Year.min().item(),
+            max_value=fbs.Year.max().item(),
+            value=fbs.Year.max().item()
+            )
+        
         fbs_chart = plot_bars_altair2(
             fbs.sel(Year=year),
             data_vars=["production", "imports"],
