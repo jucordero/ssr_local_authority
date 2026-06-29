@@ -48,6 +48,12 @@ nodes:
             Year: 2020,
             Region: 229}
 
+  # Print datasets
+  - function: agrifoodpy.utils.nodes.print_datablock
+    name: "Print population"
+    params:
+      key: "population"
+
   # Extending to 2100
   - function: agrifoodpy.utils.nodes.add_years
     name: "Extend nutrient data to 2100"
@@ -76,6 +82,11 @@ nodes:
       dataset: "food_baseline"
       years: !numpy.arange [2020, 2101]
       projection: constant
+
+  # - function: agrifoodpy.utils.nodes.print_datablock
+  #   name: "Print food_baseline"
+  #   params:
+  #     key: "food_baseline"
 
   - function: agrifoodpy.food.model.project_by_population
     name: "Project fbs by population"
