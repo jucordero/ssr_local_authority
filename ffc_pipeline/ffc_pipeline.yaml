@@ -119,11 +119,11 @@ nodes:
       target_category: ["Broadleaf woodland", "Coniferous woodland"]
       return_key: "land"
 
-  - function: agrifoodpy.food.model.increase_production_yield
+  - function: agrifoodpy.food.model.scale_production_yield
     name: "Increase production yield"
     params:
       fbs: "food"
-      yield_scale: 2.0
+      yield_scale: !scale.linear [2020, 2020, 2050, 2100, 1.0, 2.0]
       items: !!python/tuple ["Item_group", "Cereals - Excluding Beer"]
       
       # scale seed
