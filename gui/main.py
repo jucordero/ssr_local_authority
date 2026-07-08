@@ -13,17 +13,18 @@ with st.sidebar:
     
     fs = configure_pipeline(pipeline_name)
 
-    st.title("FFC Pipeline")
+    # st.title("FFC Pipeline")
 
+    with st.expander("Pipeline Nodes", expanded=True):
     # Toggle switches for each node
-    skip = []
-    for i, node in enumerate(fs.names):
-        col_node_toggle, col_node_name = st.columns([1, 6], vertical_alignment="center")
-        with col_node_name:
-            st.write(f"Step {i + 1}: {node}")
-        with col_node_toggle:
-            if not st.toggle(f"Run", value=True, key=f"node_{i}", label_visibility="collapsed"):
-                skip.append(i)
+        skip = []
+        for i, node in enumerate(fs.names):
+            col_node_toggle, col_node_name = st.columns([1, 6], vertical_alignment="center")
+            with col_node_name:
+                st.write(f"Step {i + 1}: {node}")
+            with col_node_toggle:
+                if not st.toggle(f"Run", value=True, key=f"node_{i}", label_visibility="collapsed"):
+                    skip.append(i)
 
     # Run the pipeline without the cached nodes
     fs.run(from_node=5, skip=skip, timing=True)

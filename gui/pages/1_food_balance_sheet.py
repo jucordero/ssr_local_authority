@@ -48,7 +48,7 @@ def page_food_balance_sheet():
             data_vars=["production", "imports"],
             reversed_vars=["exports", "stock", "feed", "seed", "losses", "other", "processing", "tourist", "food"],
             show=dissagregation,
-            x_axis_title="Quantity",
+            x_axis_title="Quantity [1000 tonnes]",
             stacked=True,
             horizontal=True
         )

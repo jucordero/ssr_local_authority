@@ -38,10 +38,11 @@ def configure_pipeline(pipeline_name):
     # Pipeline with shocks
     if pipeline_name == "../ffc_pipeline/ffc_pipeline_with_shocks.yaml":
 
-        year_start_prod = st.slider("Select production shock start year", min_value=2020, max_value=2050, value=2030, step=1)
-        year_start_imps = st.slider("Select imports shock start year", min_value=2020, max_value=2050, value=2033, step=1)
-        severity_prod_val = st.slider("Select production shock severity (0-1)", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
-        severity_imps_val = st.slider("Select imports shock severity (0-1)", min_value=0.0, max_value=1.0, value=0.2, step=0.05)
+        with st.expander("Configure pipeline"):
+            year_start_prod = st.slider("Select production shock start year", min_value=2020, max_value=2050, value=2030, step=1)
+            year_start_imps = st.slider("Select imports shock start year", min_value=2020, max_value=2050, value=2033, step=1)
+            severity_prod_val = st.slider("Select production shock severity (0-1)", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
+            severity_imps_val = st.slider("Select imports shock severity (0-1)", min_value=0.0, max_value=1.0, value=0.2, step=0.05)
 
         from agrifoodpy.utils.scaling import linear_scale
         import xarray as xr
