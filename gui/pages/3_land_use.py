@@ -6,7 +6,11 @@ from altair_plots import plot_yearly
 
 @st.fragment
 def page_land_use():
-    background_color = st_theme().get("backgroundColor", "#ffffff")
+    theme = st_theme()
+    if theme is not None:
+        background_color = theme.get("backgroundColor", "#ffffff")
+    else:
+        background_color = "#ffffff"
 
     db = st.session_state.datablock
     land = db["land"]

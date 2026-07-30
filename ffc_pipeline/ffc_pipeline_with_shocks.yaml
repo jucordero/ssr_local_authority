@@ -118,20 +118,21 @@ nodes:
       return_key: "land"
 
   # Shocks
-  - function: agrifoodpy_shocks.crises.environmental.rapid_production_decrease
-    name: "Apply rapid decrease shock to food production"
+  - function: agrifoodpy_shocks.crises.supply.rapid_supply_decrease
+    name: "Apply rapid food production decrease"
     params:
       fbs: "food_projected"
       items: !!python/tuple ["Item_origin", "Vegetal Products"]
       domestic_use_element: ["food", "feed", "seed", "processing", "losses", "other"]
       return_key: "food"
 
-  - function: agrifoodpy_shocks.crises.geopolitical.rapid_imports_decrease
-    name: "Apply rapid decrease shock to food imports"
+  - function: agrifoodpy_shocks.crises.supply.rapid_supply_decrease
+    name: "Apply rapid food imports decrease shock"
     params:
       fbs: "food"
       items: !!python/tuple ["Item_origin", "Vegetal Products"]
       domestic_use_element: ["food", "feed", "seed", "processing", "losses", "other"]
+      supply_element: "imports"
       return_key: "food"
 
   - function: agrifoodpy.land.model.land_scaling_from_food

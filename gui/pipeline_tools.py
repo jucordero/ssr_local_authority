@@ -54,10 +54,10 @@ def configure_pipeline(pipeline_name):
             c_init=1.0,
             c_end=0.5
         )
-        severity_prod = xr.ones_like(lin_scale)
-        severity_imps = xr.ones_like(lin_scale)
-        severity_prod.loc[{"Year":[year_start_prod, year_start_prod+1, year_start_prod+2, year_start_prod+3, year_start_prod+4]}] = 1-severity_prod_val
-        severity_imps.loc[{"Year":[year_start_imps, year_start_imps+1, year_start_imps+2, year_start_imps+3, year_start_imps+4]}] = 1-severity_imps_val
+        severity_prod = xr.zeros_like(lin_scale)
+        severity_imps = xr.zeros_like(lin_scale)
+        severity_prod.loc[{"Year":[year_start_prod, year_start_prod+1, year_start_prod+2, year_start_prod+3, year_start_prod+4]}] = severity_prod_val
+        severity_imps.loc[{"Year":[year_start_imps, year_start_imps+1, year_start_imps+2, year_start_imps+3, year_start_imps+4]}] = severity_imps_val
         fs.params[11]["severity"] = severity_prod
         fs.params[12]["severity"] = severity_imps
 
