@@ -47,7 +47,7 @@ def fbs_la_scaling(
     # get selected LA population
     la_code = la_land['LAD25CD'].where(la_land['ID']==int(la_id), drop=True).item()
     selected_la_population = la_population.sel(Code=la_code)['All ages'].values
-    popultaion_uk = population['Principal'].values
+    population_uk = population['Principal'].values
 
         
     # 2.
@@ -95,7 +95,7 @@ def fbs_la_scaling(
         + production_arable_items_la
     processing_la = fbs['processing'] * tot_production_la / tot_production_uk
 
-    ## ADD: Stock Variationand Tourist consumption ##
+    ## ADD: Stock Variation and Tourist consumption ##
 
     ## LOSSES ##
     losses_la = fbs['losses'] * tot_production_la / tot_production_uk
@@ -103,7 +103,6 @@ def fbs_la_scaling(
     ## ADD: Residual ##
 
     ## FOOD (Retail) ##
-    population_uk = ??
     food_la = fbs['food'] * selected_la_population / population_uk
 
     # 4.
