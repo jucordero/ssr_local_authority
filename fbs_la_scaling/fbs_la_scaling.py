@@ -3,23 +3,28 @@ import numpy as np
 import xarray as xr
 from agrifoodpy.pipeline import pipeline_node
 
+
 # NOTE: these cathegories are for FAOSTAT data
 # need to find a way to generalise them
-SCALE_WITH_PASTURE_ITENS = ['Bovine Meat', 'Mutton & Goat Meat', 'Meat, Other', 
+SCALE_WITH_PASTURE_ITEMS = ['Bovine Meat', 'Mutton & Goat Meat', 'Meat, Other', 
                   'Offals, Edible', 'Fats, Animals, Raw', 'Butter, Ghee', 
                   'Cream', 'Animal Products', 'Meat', 'Offals', 'Animal fats',
                   'Milk - Excluding Butter']
 SCALE_WITH_HEADCOUNT_ITEMS = ['Pigmeat', 'Poultry Meat', 'Eggs']
 
 
-@pipeline_node(["fbs", "population", "land", "la_population", "la_land"])
+@pipeline_node(["fbs", "population", "land", "la_population", "la_land", 
+                "scale_with_pasture", "scale_with_headcounts"])
 def fbs_la_scaling(
     fbs,
     population,
     land,
     la_population,
     la_land,
-    la_id
+    la_id,
+    livestock_la_data, # NOTE: uses agrifoodpy_data.food UK_LIVESTOCK_LAD structure
+    scale_with_pasture=SCALE_WITH_PASTURE_ITEMS,
+    scale_with_headcounts=SCALE_WITH_HEADCOUNT_ITEMS,
     ):
     """
     Scale FBS data to match the population and land area.
@@ -55,7 +60,8 @@ def fbs_la_scaling(
     la_land_mask = la_land["Boundaries"].where(la_land["Boundaries"] == int(la_id))
     # get selected LA population
     la_code = la_land['LAD25CD'].where(la_land['ID']==int(la_id), drop=True).item()
-    selected_la_population = la_population.sel(Code=la_code)['All ages'].values
+    # selected_la_population = la_population.sel(Code=la_code)['All ages'].values
+    selected_la_population = la_population["All ages"].reindex(Code=[la_code]).values[0]
     population_uk = population['Principal'].values
 
         
@@ -89,17 +95,26 @@ def fbs_la_scaling(
     production_animal_items_uk = fbs.sel(Item=animal_items_uk)
 
     # scale ruminant production (includes dairy) with pasture land use
-    ruminant_items_uk = fbs.Item.loc[fbs.Item_name.isin(SCALE_WITH_PASTURE_ITENS)].values
+    ruminant_items_uk = fbs.Item.loc[fbs.Item_name.isin(scale_with_pasture)].values
     production_ruminant_items_uk = fbs.sel(Item=ruminant_items_uk)
     production_ruminant_items_la = production_ruminant_items_uk['production'] \
         * selected_la_land_use.where(selected_la_land_use==2).count() \
             / land_use_uk.where(land_use_uk==2).count()
     
     # scale poultry and pigmeat production with headcount
-    poultry_pigmeat_items = fbs.Item.loc[fbs.Item_name.isin(SCALE_WITH_HEADCOUNT_ITEMS)].values
+    poultry_pigmeat_items = fbs.Item.loc[fbs.Item_name.isin(scale_with_headcounts)].values
     production_poultry_pigmeat_items_uk = fbs.sel(Item=poultry_pigmeat_items)
-    headcount_uk = 100.  # NOTE: where do I find hadcounts??
-    headcount_la = 100.
+
+    # read headcounts 
+    headcount_la = livestock_la_data['Livestock counts'] \
+        .sel(Species=['Poultry', 'Pigs'], Code=la_code) \
+        .sum() \
+        .item()
+    headcount_uk = livestock_la_data['Livestock counts'] \
+        .sel(Species=['Poultry', 'Pigs']) \
+        .sum() \
+        .item()
+
     production_poultry_pigmeat_items_la = \
         production_poultry_pigmeat_items_uk['production'] \
         * headcount_la / headcount_uk
@@ -139,11 +154,14 @@ def fbs_la_scaling(
         + production_arable_items_la
     processing_la = fbs['processing'] * tot_production_la / tot_production_uk
 
+    ## IMPORTS and EXPORTS ##
+    imports_la = fbs['imports'] * selected_la_population / population_uk
+    exports_la = fbs['exports'] * tot_production_la / tot_production_uk
+
     ## Stock Variation and Tourist consumption ##
     # should we use  population_LA_percentage = LA_pop_arr / LA_pop_arr.sum() instead?
     tourist_la = fbs['tourist'] * selected_la_population / population_uk
-    # NOTE: change! stock should be a function of the total domestic use
-    stock_la = fbs['stock'] * selected_la_population / population_uk
+    stock_la = fbs['domestic'] * selected_la_population / population_uk
 
     ## LOSSES ##
     losses_la = fbs['losses'] * tot_production_la / tot_production_uk
@@ -153,13 +171,18 @@ def fbs_la_scaling(
     ## FOOD (Retail) ##
     food_la = fbs['food'] * selected_la_population / population_uk
 
+    ## OTHER ##
+    other_la = fbs['other'] * selected_la_population / population_uk
+
     # 4.
     # Return the scaled FBS data, the scaled land data, and the scaled
     # population data making sure they follow the exact same structure as the
     # input data.
-    fbs_scaled = fbs.copy()
+    fbs_scaled = fbs.copy(deep=True)
     fbs_scaled['production'].loc[arable_items_uk] = production_arable_items_la
     fbs_scaled['production'].loc[animal_items_uk] = production_animal_items_la
+    fbs_scaled['imports'] = imports_la
+    fbs_scaled['exports'] = exports_la
     fbs_scaled['seed'] = seed_la
     fbs_scaled['feed'] = feed_la
     fbs_scaled['processing'] = processing_la
@@ -171,7 +194,6 @@ def fbs_la_scaling(
 
     land_scaled = selected_la_land_use
     population_scaled = selected_la_population 
-    # OR population_scaled['All ages'].values = selected_la_population ??
 
     ## NOTE: check overall balance between production, import and export
 
