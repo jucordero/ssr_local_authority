@@ -119,12 +119,13 @@ def fbs_la_scaling(
         production_poultry_pigmeat_items_uk['production'] \
         * headcount_la / headcount_uk
 
-    # scale remaining animal products with population
+    # scale remaining animal products with pasture land use 
     ruminant_and_poultry_pigmeat = np.concatenate([ruminant_items_uk, poultry_pigmeat_items])
     other_animal_items = np.setdiff1d(animal_items_uk, ruminant_and_poultry_pigmeat)
     production_other_animal_items_uk = fbs.sel(Item=other_animal_items)
     production_other_animal_items_la = production_other_animal_items_uk['production'] \
-        * selected_la_population / population_uk
+        * selected_la_land_use.where(selected_la_land_use==2).count() \
+            / land_use_uk.where(land_use_uk==2).count()
 
     ##  SEED  ##
     # tot animal production uk and la
@@ -167,12 +168,11 @@ def fbs_la_scaling(
     losses_la = fbs['losses'] * tot_production_la / tot_production_uk
     ## Residual ##
     residual_la = fbs['residual'] * tot_production_la / tot_production_uk
+    other_la = fbs['other'] * tot_production_la / tot_production_uk
 
     ## FOOD (Retail) ##
     food_la = fbs['food'] * selected_la_population / population_uk
 
-    ## OTHER ##
-    other_la = fbs['other'] * selected_la_population / population_uk
 
     # 4.
     # Return the scaled FBS data, the scaled land data, and the scaled
@@ -190,6 +190,7 @@ def fbs_la_scaling(
     fbs_scaled['tourist'] = tourist_la
     fbs_scaled['losses'] = losses_la
     fbs_scaled['residual'] = residual_la
+    fbs_scaled['other'] = other_la
     fbs_scaled['food'] = food_la
 
     land_scaled = selected_la_land_use
