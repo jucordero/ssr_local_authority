@@ -162,14 +162,23 @@ def fbs_la_scaling(
         / production_animal_items_uk['production'] 
 
     ## PROCESSING ##
-    tot_production_uk = production_animal_items_uk['production'] \
-        + production_arable_items_uk['production']
-    tot_production_la = production_animal_items_la \
-        + production_arable_items_la
+    # Total production should include both animal and plant production across all
+    # items in the relevant subsets.
+    # xarray.sum() returns a 0-D DataArray, not a plain Python scalar; convert to
+    # a scalar with .item() (or float(...)) before arithmetic so the result is a
+    # true number and not a 0-D NumPy array.
+    tot_production_uk = (
+        float(production_animal_items_uk['production'].sum().item())
+        + float(production_arable_items_uk['production'].sum().item())
+    )
+    tot_production_la = (
+        float(production_animal_items_la.sum().item())
+        + float(production_arable_items_la.sum().item())
+    )
     processing_la = fbs['processing'] * tot_production_la / tot_production_uk
 
     ## IMPORTS and EXPORTS ##
-    imports_la = fbs['imports'] * selected_la_population / population_uk
+    imports_la = fbs['imports'] * selected_la_population / population_uk  # NOTE: check this
     exports_la = fbs['exports'] * tot_production_la / tot_production_uk
 
     ## Stock Variation and Tourist consumption ##
@@ -182,7 +191,7 @@ def fbs_la_scaling(
 
     ## Residual ##
     residual_la = fbs['residual'] * tot_production_la / tot_production_uk
-    # other_la = fbs['other'] * tot_production_la / tot_production_uk
+    other_la = fbs['other'] * tot_production_la / tot_production_uk
 
     ## FOOD (Retail) ##
     food_la = fbs['food'] * selected_la_population / population_uk
@@ -204,7 +213,7 @@ def fbs_la_scaling(
     fbs_scaled['tourist'] = tourist_la
     fbs_scaled['losses'] = losses_la
     fbs_scaled['residual'] = residual_la
-    # fbs_scaled['other'] = other_la
+    fbs_scaled['other'] = other_la
     fbs_scaled['food'] = food_la
 
     land_scaled = selected_la_land_use
