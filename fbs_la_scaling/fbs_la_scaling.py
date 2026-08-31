@@ -14,7 +14,7 @@ SCALE_WITH_HEADCOUNT_ITEMS = ['Pigmeat', 'Poultry Meat', 'Eggs']
 
 
 @pipeline_node(["fbs", "population", "land", "la_population", "la_land", 
-                "scale_with_pasture", "scale_with_headcounts"])
+                "la_id", "livestock_la_data", "scale_with_pasture", "scale_with_headcounts"])
 def fbs_la_scaling(
     fbs,
     population,
@@ -25,6 +25,7 @@ def fbs_la_scaling(
     livestock_la_data, # NOTE: uses agrifoodpy_data.food UK_LIVESTOCK_LAD structure
     scale_with_pasture=SCALE_WITH_PASTURE_ITEMS,
     scale_with_headcounts=SCALE_WITH_HEADCOUNT_ITEMS,
+    livestock_items=['Poultry', 'Pigs']
     ):
     """
     Scale FBS data to match the population and land area.
@@ -46,6 +47,18 @@ def fbs_la_scaling(
         identify each region.
     la_id : str
         The local authority ID to be used for scaling.
+    livestock_la_data : xr.Dataset
+        The livestock data array containing the headcounts per species and
+        local authority.
+    scale_with_pasture : list of str, optional
+        List of food items to be scaled with pasture land use. Default is
+        SCALE_WITH_PASTURE_ITEMS.
+    scale_with_headcounts : list of str, optional
+        List of food items to be scaled with headcounts. Default is
+        SCALE_WITH_HEADCOUNT_ITEMS.
+    livestock_items : list of str, optional
+        List of items in livestock data to be used for scaling. Default is
+        [Poultry', 'Pigs'].
 
     Returns
     -------
@@ -107,11 +120,11 @@ def fbs_la_scaling(
 
     # read headcounts 
     headcount_la = livestock_la_data['Livestock counts'] \
-        .sel(Species=['Poultry', 'Pigs'], Code=la_code) \
+        .sel(Species=livestock_items, Code=la_code) \
         .sum() \
-        .item()
+        .item()  
     headcount_uk = livestock_la_data['Livestock counts'] \
-        .sel(Species=['Poultry', 'Pigs']) \
+        .sel(Species=livestock_items) \
         .sum() \
         .item()
 
@@ -166,9 +179,10 @@ def fbs_la_scaling(
 
     ## LOSSES ##
     losses_la = fbs['losses'] * tot_production_la / tot_production_uk
+
     ## Residual ##
     residual_la = fbs['residual'] * tot_production_la / tot_production_uk
-    other_la = fbs['other'] * tot_production_la / tot_production_uk
+    # other_la = fbs['other'] * tot_production_la / tot_production_uk
 
     ## FOOD (Retail) ##
     food_la = fbs['food'] * selected_la_population / population_uk
@@ -190,7 +204,7 @@ def fbs_la_scaling(
     fbs_scaled['tourist'] = tourist_la
     fbs_scaled['losses'] = losses_la
     fbs_scaled['residual'] = residual_la
-    fbs_scaled['other'] = other_la
+    # fbs_scaled['other'] = other_la
     fbs_scaled['food'] = food_la
 
     land_scaled = selected_la_land_use
