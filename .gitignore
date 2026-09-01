@@ -205,3 +205,6 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Draft and mock scripts
+fbs_la_scaling/my_test_for_function.ipynb
