@@ -184,7 +184,7 @@ def fbs_la_scaling(
     ## Stock Variation and Tourist consumption ##
     # should we use  population_LA_percentage = LA_pop_arr / LA_pop_arr.sum() instead?
     tourist_la = fbs['tourist'] * selected_la_population / population_uk
-    stock_la = fbs['domestic'] * selected_la_population / population_uk
+    stock_la = fbs['stock'] * selected_la_population / population_uk
 
     ## LOSSES ##
     losses_la = fbs['losses'] * tot_production_la / tot_production_uk
